@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { DefaultComponent } from './default/default.component';
@@ -7,6 +8,8 @@ import { DefnavbarComponent } from './defnavbar/defnavbar.component';
 import { RepairComponent } from './repair/repair.component';
 import { FlashMessagesModule } from "angular2-flash-messages/module";
 import { SimpleNotificationsModule } from 'angular2-notifications';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpService } from './http.service';
 
 /* Route import */
 import { RouterModule, Routes } from '@angular/router';
@@ -17,7 +20,8 @@ const appRoutes: Routes = [
   { path: '', component: DefaultComponent },
   { path: 'repair', component: RepairComponent },
   { path: ':token', component: DefaultComponent },
-  { path: 'relogin', component: DefaultComponent }
+  { path: 'relogin', component: DefaultComponent },
+  { path: 'reloginerror', component: DefaultComponent }
 ]
 
 @NgModule({
@@ -31,9 +35,11 @@ const appRoutes: Routes = [
     BrowserModule,
     RouterModule.forRoot(appRoutes),//router是全專案唯一一個就必須加入此段
     FlashMessagesModule,
-    SimpleNotificationsModule.forRoot()
+    SimpleNotificationsModule.forRoot(),
+    BrowserAnimationsModule,
+    HttpModule
   ],
-  providers: [
+  providers: [HttpService
   ],
   bootstrap: [AppComponent]
 })

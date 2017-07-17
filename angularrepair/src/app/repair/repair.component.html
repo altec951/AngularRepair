@@ -1,3 +1,6 @@
-<p>
-  repair works!
-</p>
+<div>
+  <select name="floor" id="floor" (chage)="firstDropDownChanged($event.target.selectedIndex - 1)">
+    <option value="">請選擇地點</option>
+    <option *ngFor="let item of floorValueList">{{ item }}</option>
+  </select>
+</div>

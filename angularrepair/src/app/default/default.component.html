@@ -134,14 +134,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="default in defaults">
-                            <td>{{ place_name }}</td>
-                            <td>{{ repair_stuff }}</td>
-                            <td>{{ state_damage }}</td>
-                            <td>{{ repair_date }}</td>
-                            <td>{{ dealing_process }}</td>
-                            <td>{{ d_name }}</td>
-                            <td>{{ other }}</td>
+                        <tr *ngFor="let item of repairLists ; let k = index">
+                            <td>{{ placeNameList[k] }}</td>
+                            <td>{{ item.repair_stuff }}</td>
+                            <td>{{ item.state_damage }}</td>
+                            <td>{{ item.repair_date }}</td>
+                            <td>{{ item.dealing_process }}</td>
+                            <td>{{ departmentNameList[k] }}</td>
+                            <td>{{ item.other }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -173,7 +173,6 @@
                     <br />
                     <br />
                 -->
-
             <!--頁尾-->
             <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
                 <table style="text-align: center; width: 1400px; font-size: 12px;" align="center">

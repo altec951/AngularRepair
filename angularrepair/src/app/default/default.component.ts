@@ -3,6 +3,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FlashMessagesService } from "angular2-flash-messages";
 import { NotificationsService } from 'angular2-notifications';
+import { HttpService } from '../http.service';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
+
+import { Http, RequestOptions, Headers } from "@angular/http";
+import 'rxjs/add/operator/map';
+import 'rxjs/Rx';
+
 
 @Component({
   selector: 'app-default',
@@ -13,55 +21,51 @@ export class DefaultComponent implements OnInit {
 
   token: any;
   hasToken: boolean = false;
-  public options = {
-    position: ["top", "left"],
-    timeOut: 0,
-    lastOnBottom: true,
-  };
+  needRelogin: boolean = false;
+  repairLists: Object[] = [];
+  placeNameList: any[] = [];
+  departmentNameList: any[] = [];
 
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     public _flashMessage: FlashMessagesService,
-    private _service: NotificationsService
+    private _service: NotificationsService,
+    private _http: HttpService,
+    private Http: Http
   ) { }
 
   ngOnInit() {
+    this.getRepairData();
+
     this.token = this.route.snapshot.params['token'];
     if (this.token) {
       sessionStorage.setItem('token', this.token);
       this.router.navigate(['/']);
-      //   if (this.token.toString() == "relogin"){
-      // //     this._flashMessage.show("NTUB account only",
-      // // { cssClass: 'alert-success', timeout: 3000 });
-      //     this.router.navigate(['']);
-      //   }
     }
     if (sessionStorage.getItem('token')) {
       this.hasToken = true;
       if (sessionStorage.getItem('token') == "relogin") {
         sessionStorage.clear();
-        // this._service.success(
-        //   'Some Title',
-        //   'Some Content',
-        //   {
-        //     timeOut: 5000,
-        //     showProgressBar: true,
-        //     pauseOnHover: false,
-        //     clickToClose: false,
-        //     maxLength: 10
-        //   }
-        // )
+        window.location.href = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:4200/reloginerror";
       }
-
+      if (sessionStorage.getItem('token') == "reloginerror") {
+        sessionStorage.clear();
+        this._service.error(
+          'Error',
+          'NTUB email only, please retry',
+          {
+            timeOut: 4000,
+            showProgressBar: false,
+            pauseOnHover: false,
+            clickToClose: false
+          }
+        )
+      }
     } else {
       this.hasToken = false;
     }
-    // this.relogin = this.route.snapshot.params['relogin'];
-    // if (this.relogin){
-    //   this.relogin();
-    // }
   }
 
   login() {
@@ -75,19 +79,47 @@ export class DefaultComponent implements OnInit {
   }
 
   relogin() {
-    if (sessionStorage.getItem('token') == "relogin") {
-      sessionStorage.clear();
-      this._service.success(
-        'Some Title',
-        'Some Content',
-        {
-          timeOut: 5000,
-          showProgressBar: true,
-          pauseOnHover: false,
-          clickToClose: false,
-          maxLength: 10
+    sessionStorage.clear();
+    window.location.href = "http://localhost:2422/register.html";
+  }
+
+  getRepairData(){
+    this._http.getData("http://localhost:2422/api/repairapplications").subscribe(
+      data => {
+        for (let repairObj of data) {
+          if (!(repairObj.dealing_process == "已完成")) {
+            this.getRepairPlace(repairObj.place_no);
+            this.getRepairDepartment(repairObj.r_d_no);
+            this.repairLists.push(repairObj);
+          }
         }
-      )
-    }
+      },
+      error => { console.log(error) },
+      () => { }
+    )
+  }
+
+  getRepairPlace(placeid) {
+    this._http.getData("http://localhost:2422/api/places/" + placeid).subscribe(
+      data => {
+        this.placeNameList.push(data.place_name)
+      },
+      error => {
+        console.log(error)
+      },
+      () => { }
+    )
+  }
+
+  getRepairDepartment(departmentid){
+    this._http.getData("http://localhost:2422/api/departments/" + departmentid).subscribe(
+      data => {
+        this.departmentNameList.push(data.d_name)
+      },
+      error => {
+        console.log(error)
+      },
+      () => { }
+    )
   }
 }
