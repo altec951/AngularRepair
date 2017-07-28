@@ -1,15 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { DefaultComponent } from './default/default.component';
 import { DefnavbarComponent } from './defnavbar/defnavbar.component';
-import { RepairComponent } from './repair/repair.component';
-import { FlashMessagesModule } from "angular2-flash-messages/module";
+import { RepairComponent, FilterPipe, OrderBy} from './repair/repair.component';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpService } from './http.service';
+import { DatePipe } from '@angular/common';
 
 /* Route import */
 import { RouterModule, Routes } from '@angular/router';
@@ -29,17 +30,20 @@ const appRoutes: Routes = [
     AppComponent,
     DefaultComponent,
     DefnavbarComponent,
-    RepairComponent
+    RepairComponent,
+    FilterPipe,
+    OrderBy
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),//router是全專案唯一一個就必須加入此段
-    FlashMessagesModule,
     SimpleNotificationsModule.forRoot(),
     BrowserAnimationsModule,
-    HttpModule
+    HttpModule,
+    FormsModule
   ],
-  providers: [HttpService
+  providers: [HttpService,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

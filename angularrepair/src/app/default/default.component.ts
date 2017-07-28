@@ -1,15 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Router, ActivatedRoute } from "@angular/router";
-import { FlashMessagesService } from "angular2-flash-messages";
 import { NotificationsService } from 'angular2-notifications';
 import { HttpService } from '../http.service';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
-
-import { Http, RequestOptions, Headers } from "@angular/http";
-import 'rxjs/add/operator/map';
-import 'rxjs/Rx';
 
 
 @Component({
@@ -26,14 +19,11 @@ export class DefaultComponent implements OnInit {
   placeNameList: any[] = [];
   departmentNameList: any[] = [];
 
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    public _flashMessage: FlashMessagesService,
     private _service: NotificationsService,
-    private _http: HttpService,
-    private Http: Http
+    private _http: HttpService
   ) { }
 
   ngOnInit() {
